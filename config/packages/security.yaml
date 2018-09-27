@@ -1,0 +1,35 @@
+# config/packages/security.yaml
+security:
+    providers:
+        in_memory: 
+             memory:
+                 users:
+                    user:
+                        password: $2a$12$vy8iTfdNHQqwF.p959B.vu1rF.sPLa1XcTiWKgwVrnx7tLbJBbMxq
+                        roles: 'ROLE_USER'
+                    admin:
+                        password: $2a$12$LkYrO4jRPTS1OHAL4XShwemdEU0ctyDVpSqyCjoui750T6KqNiEl2
+                        roles: 'ROLE_ADMIN'
+    encoders:
+        Symfony\Component\Security\Core\User\User:
+           algorithm: bcrypt
+           cost: 12
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: ~
+            form_login:
+                login_path: login
+                check_path: login
+                default_target_path: /project2
+            logout:
+                path: /logout
+                target: /
+    access_control:
+        # require ROLE_ADMIN for /admin*
+          - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+          - { path: ^/, roles: ROLE_ADMIN }
+          - { path: ^/, roles: ROLE_USER }
+
