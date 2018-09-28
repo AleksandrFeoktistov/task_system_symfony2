@@ -21,8 +21,10 @@
                 <td>{{ project2.name }}</td>
                 <td>{{ project2.description }}</td>
                 <td>
-                    <a href="{{ path('project2_show', {'id': project2.id}) }}">show</a>
-                    <a href="{{ path('project2_edit', {'id': project2.id}) }}">edit</a>
+                  <a href="{{ path('project2_show', {'id': project2.id}) }}">show</a>
+                  {% if is_granted('ROLE_ADMIN') %}
+                  <a href="{{ path('project2_edit', {'id': project2.id}) }}">edit</a>
+                  {% endif %}
                 </td>
             </tr>
         {% else %}

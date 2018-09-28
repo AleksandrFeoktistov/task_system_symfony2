@@ -24,10 +24,10 @@
         <a class="nav-link" href="#">tag tickets</a>
         </li>
         <li class="nav-item">
-        <a class="nav-link" href="{{ path ('users_index')}} ">users</a>
+        <a class="nav-link" href="#">users</a>
         </li>
         </ul>
-        <span class="navbar-text"></span>
+        <span class="navbar-text"><a href="{{ path ('logout')}}">logout</a></span>
       </div>
     </nav>
     {% block body %}{% endblock %}
