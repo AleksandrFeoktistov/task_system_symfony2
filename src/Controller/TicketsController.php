@@ -9,6 +9,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @Route("/tickets")
@@ -57,8 +60,11 @@ class TicketsController extends AbstractController
     /**
      * @Route("/{id}/edit", name="tickets_edit", methods="GET|POST")
      */
-    public function edit(Request $request, Tickets $ticket): Response
+    public function edit(Request $request, Tickets $ticket, AuthorizationCheckerInterface $authChecker): Response
     {
+        if (false === $authChecker->isGranted('ROLE_ADMIN')) {
+        throw new AccessDeniedException('Unable to access this page!');
+        }
         $form = $this->createForm(TicketsType::class, $ticket);
         $form->handleRequest($request);
 
