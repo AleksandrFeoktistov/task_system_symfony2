@@ -62,9 +62,9 @@ class TicketsController extends AbstractController
      */
     public function edit(Request $request, Tickets $ticket, AuthorizationCheckerInterface $authChecker): Response
     {
-        if (false === $authChecker->isGranted('ROLE_ADMIN')) {
-        throw new AccessDeniedException('Unable to access this page!');
-        }
+
+     // check for "edit" access: calls all voters
+        $this->denyAccessUnlessGranted('edit', $ticket);
         $form = $this->createForm(TicketsType::class, $ticket);
         $form->handleRequest($request);
 
