@@ -34,7 +34,9 @@
                 <td>{{ ticket.createrId }}</td>
                 <td>
                     <a href="{{ path('tickets_show', {'id': ticket.id}) }}">show</a>
+                    {% if is_granted('edit', ticket) %}
                     <a href="{{ path('tickets_edit', {'id': ticket.id}) }}">edit</a>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}

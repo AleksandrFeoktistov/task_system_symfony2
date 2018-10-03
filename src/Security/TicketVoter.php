@@ -6,11 +6,18 @@ use App\Entity\Tickets;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
+
 
 class TicketVoter extends Voter
 {
     // these strings are just invented: you can use anything
     const EDIT = 'edit';
+    private $decisionManager;
+    public function __construct(AccessDecisionManagerInterface $decisionManager)
+    {
+        $this->decisionManager = $decisionManager;
+    }
 
     protected function supports($attribute, $subject)
     {
@@ -30,7 +37,6 @@ class TicketVoter extends Voter
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $user = $token->getUser();
-
         if (!$user instanceof User) {
             // the user must be logged in; if not, deny access
             return false;
@@ -46,6 +52,9 @@ class TicketVoter extends Voter
         }
 
         throw new \LogicException('This code should not be reached!');
+        if ($this->decisionManager->decide($token, array('ROLE_ADMIN'))) {
+            return true;
+        }
     }
 
     private function canView(Post $post, User $user)
