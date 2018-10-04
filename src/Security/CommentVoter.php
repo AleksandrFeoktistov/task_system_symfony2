@@ -1,17 +1,17 @@
 <?php
 // src/Security/PostVoter.php
 namespace App\Security;
-use App\Entity\Tickets;
+use App\Entity\Comments;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 
 
-class TicketVoter extends Voter
+class CommentVoter extends Voter
 {
     // these strings are just invented: you can use anything
-    const EDIT = 'edit';
+    const EDITCOMMENTS = 'editcomments';
     private $decisionManager;
     public function __construct(AccessDecisionManagerInterface $decisionManager)
     {
@@ -21,12 +21,12 @@ class TicketVoter extends Voter
     protected function supports($attribute, $subject)
     {
         // if the attribute isn't one we support, return false
-        if (!in_array($attribute, array(self::EDIT))) {
+        if (!in_array($attribute, array(self::EDITCOMMENTS))) {
             return false;
         }
 
         // only vote on Post objects inside this voter
-        if (!$subject instanceof Tickets) {
+        if (!$subject instanceof Comments) {
             return false;
         }
 
@@ -49,7 +49,7 @@ class TicketVoter extends Voter
         $post = $subject;
 
         switch ($attribute) {
-            case self::EDIT:
+            case self::EDITCOMMENTS:
                 return $this->canEdit($post, $user);
         }
 
@@ -71,7 +71,7 @@ class TicketVoter extends Voter
         return !$post->isPrivate();
     }
 
-    private function canEdit(Tickets $ticket, User $user)
+    private function canEdit(Comments $comment, User $user)
     {
         // this assumes that the data object has a getOwner() method
         // to get the entity of the user who owns this data object
@@ -79,6 +79,6 @@ class TicketVoter extends Voter
 
         //$repository = $this->getDoctrine()->getRepository(Tickets::class);
         //$tic = $repository->findAll();
-        return $user->getId() === $ticket->getCreaterId();
+        return $user->getId() === $comment->getUserId();
     }
 }

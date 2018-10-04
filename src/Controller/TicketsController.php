@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use App\Entity\Comments;
 
 /**
  * @Route("/tickets")
@@ -54,7 +55,12 @@ class TicketsController extends AbstractController
      */
     public function show(Tickets $ticket): Response
     {
-        return $this->render('tickets/show.html.twig', ['ticket' => $ticket]);
+      $manager = $this->getDoctrine()->getManager();
+      $manager->persist($ticket);
+      $manager->flush();
+      $repository = $this->getDoctrine()->getRepository(Comments::class);
+      $comments = $repository->findBy(['ticket_id' => $ticket->getId(),]);
+      return $this->render('tickets/show.html.twig', ['ticket' => $ticket, 'comments' => $comments ]);
     }
 
     /**

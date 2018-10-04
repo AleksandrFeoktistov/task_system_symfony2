@@ -4,7 +4,6 @@
 
 {% block body %}
     <h1>Edit Tickets</h1>
-    {{ dump(ticket)}}
     {{ include('tickets/_form.html.twig', {'button_label': 'Update'}) }}
     <a href="{{ path('tickets_index') }}">back to list</a>
     {% if is_granted('DELETE') %}
