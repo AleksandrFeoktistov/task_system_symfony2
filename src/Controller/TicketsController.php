@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Tickets;
 use App\Form\TicketsType;
 use App\Repository\TicketsRepository;
+use App\Entity\Project2;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,15 +29,21 @@ class TicketsController extends AbstractController
     }
 
     /**
-     * @Route("/new", name="tickets_new", methods="GET|POST")
+     * @Route("/new/{id}", name="tickets_new", methods="GET|POST")
      */
-    public function new(Request $request): Response
+    public function new(Request $request, Project2 $project): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
         $ticket = new Tickets();
+        $ticket->setProjectId($project->getId());
+        $ticket->setcreaterId($user->getId());
         $form = $this->createForm(TicketsType::class, $ticket);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $ticket->setProjectId($project->getId());
+            $ticket->setcreaterId($user->getId());
             $manager = $this->getDoctrine()->getManager();
             $manager->persist($ticket);
             $manager->flush();
