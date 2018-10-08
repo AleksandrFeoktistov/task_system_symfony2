@@ -14,6 +14,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use App\Entity\Comments;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use App\Entity\User;
 
 /**
  * @Route("/tickets")
@@ -36,25 +42,64 @@ class TicketsController extends AbstractController
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
         $ticket = new Tickets();
-        $ticket->setProjectId($project->getId());
         $ticket->setcreaterId($user->getId());
-        $form = $this->createForm(TicketsType::class, $ticket);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $ticket->setProjectId($project->getId());
-            $ticket->setcreaterId($user->getId());
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($ticket);
-            $manager->flush();
-
-            return $this->redirectToRoute('tickets_index');
+        $ticket->setprojectId($project->getId());
+        $repository = $this->getDoctrine()->getRepository(User::class);
+        $user = $repository->findall();
+        $username = array();
+        for ($i=0; $i < count($user); $i++) {
+           $username{$user{$i}->getusername()} = $user{$i}->getid();
+          // code...
         }
+        var_dump($username);
+        //$username = $user ->getusername();
+        //$allusers->getUsername();
+        $form = $this->createFormBuilder($ticket)
+            ->add('name', TextType::class)
+            ->add('description', TextType::class)
+            ->add('type', ChoiceType::class, array(
+                  'choices'  => array(
+                  'task' => 1,
+                  'bug' => 2,
+                  ),
+                  ))
+           ->add('status', ChoiceType::class, array(
+                  'choices'  => array(
+                  'new' => 1,
+                  'in progress' => 2,
+                  'end' => 3,
+                  ),
+                  ))
+          ->add('assignedId', ChoiceType::class, array(
+                  'choices'  => $username,
+                   ))
+           ->add('file', TextType::class)
 
-        return $this->render('tickets/new.html.twig', [
-            'ticket' => $ticket,
+
+            //->add('save', SubmitType::class, array('label' => 'Create Task'))
+            ->add('projectId', HiddenType::class)
+            ->add('createrId', HiddenType::class)
+            ->add('save', SubmitType::class, array('label' => 'Create ticket'))
+            ->getForm();
+              $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+              $ticket = $form->getData();
+              $entityManager = $this->getDoctrine()->getManager();
+              $entityManager->persist($ticket);
+              $entityManager->flush();
+              return $this->redirectToRoute('tickets_index');
+            }
+            return $this->render('tickets/new.html.twig',
+            array('ticket' => $ticket,
             'form' => $form->createView(),
-        ]);
+             ));
+             if ($form->isSubmitted() && $form->isValid()) {
+                 $manager = $this->getDoctrine()->getManager();
+                 $manager->persist($ticket);
+                 $manager->flush();
+
+                 return $this->redirectToRoute('project2_index');
+             }
     }
 
     /**
