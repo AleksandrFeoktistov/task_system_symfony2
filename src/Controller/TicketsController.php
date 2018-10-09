@@ -9,6 +9,7 @@ use App\Entity\Project2;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Repository\UserRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -44,13 +45,16 @@ class TicketsController extends AbstractController
         $ticket = new Tickets();
         $ticket->setcreaterId($user->getId());
         $ticket->setprojectId($project->getId());
-        $repository = $this->getDoctrine()->getRepository(User::class);
-        $user = $repository->findall();
-        $userName = array();
-        foreach ($user as $users) {
-           $userName[$users->getUsername()] = $users->getId();
-          // code...
-        }
+         $repository = $this->getDoctrine()->getRepository(User::class);
+        //  $user = $repository->findall();
+         $user = $this->getDoctrine()
+          ->getRepository(User::class)
+          ->findBySomeField();
+           $username = array();
+           foreach ($user as $row)
+          {
+            $username[$row['username']] = $row['id'];
+          }
         $form = $this->createFormBuilder($ticket)
             ->add('name', TextType::class)
             ->add('description', TextType::class)
@@ -68,7 +72,7 @@ class TicketsController extends AbstractController
                   ),
                   ))
           ->add('assignedId', ChoiceType::class, array(
-                  'choices'  => $userName,
+                  'choices'  => $username,
                    ))
            ->add('file', TextType::class)
 
