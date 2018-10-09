@@ -46,14 +46,11 @@ class TicketsController extends AbstractController
         $ticket->setprojectId($project->getId());
         $repository = $this->getDoctrine()->getRepository(User::class);
         $user = $repository->findall();
-        $username = array();
-        for ($i=0; $i < count($user); $i++) {
-           $username{$user{$i}->getusername()} = $user{$i}->getid();
+        $userName = array();
+        foreach ($user as $users) {
+           $userName[$users->getUsername()] = $users->getId();
           // code...
         }
-        var_dump($username);
-        //$username = $user ->getusername();
-        //$allusers->getUsername();
         $form = $this->createFormBuilder($ticket)
             ->add('name', TextType::class)
             ->add('description', TextType::class)
@@ -71,7 +68,7 @@ class TicketsController extends AbstractController
                   ),
                   ))
           ->add('assignedId', ChoiceType::class, array(
-                  'choices'  => $username,
+                  'choices'  => $userName,
                    ))
            ->add('file', TextType::class)
 
