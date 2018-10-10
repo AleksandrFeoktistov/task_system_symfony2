@@ -15,6 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use App\Entity\Comments;
+use App\Entity\Tags;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -94,13 +95,6 @@ class TicketsController extends AbstractController
             array('ticket' => $ticket,
             'form' => $form->createView(),
              ));
-             if ($form->isSubmitted() && $form->isValid()) {
-                 $manager = $this->getDoctrine()->getManager();
-                 $manager->persist($ticket);
-                 $manager->flush();
-
-                 return $this->redirectToRoute('project2_index');
-             }
     }
 
     /**
@@ -124,19 +118,59 @@ class TicketsController extends AbstractController
 
      // check for "edit" access: calls all voters
         $this->denyAccessUnlessGranted('edit', $ticket);
-        $form = $this->createForm(TicketsType::class, $ticket);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('tickets_edit', ['id' => $ticket->getId()]);
-        }
-
-        return $this->render('tickets/edit.html.twig', [
-            'ticket' => $ticket,
+        $user = $this->getDoctrine()
+         ->getRepository(User::class)
+         ->findBySomeField();
+          $username = array();
+          $tags="jkjk";
+          foreach ($user as $row)
+         {
+           $username[$row['username']] = $row['id'];
+         }
+        $form = $this->createFormBuilder($ticket)
+            ->add('name', TextType::class)
+            ->add('description', TextType::class)
+            ->add('type', ChoiceType::class, array(
+                  'choices'  => array(
+                  'task' => 1,
+                  'bug' => 2,
+                  ),
+                  ))
+           ->add('status', ChoiceType::class, array(
+                  'choices'  => array(
+                  'new' => 1,
+                  'in progress' => 2,
+                  'end' => 3,
+                  ),
+                  ))
+          ->add('assignedId', ChoiceType::class, array(
+                  'choices'  => $username,
+                   ))
+           ->add('file', TextType::class)
+            ->add('projectId', HiddenType::class)
+            ->add('createrId', HiddenType::class)
+            ->add('tags', TextType::class,array(
+               "mapped" => false, 'data' => "$tags"))
+            ->add('save', SubmitType::class, array('label' => 'Create ticket'))
+            ->getForm();
+              $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+              $ticket = $form->getData();
+              $tags = $form->get('tags')->getData();
+              $tag = new Tags();
+              $tag ->setName($tags);
+              $em = $this->getDoctrine()->getManager();
+              $em->persist($tag);
+              $em->flush();
+              $entityManager = $this->getDoctrine()->getManager();
+              $entityManager->persist($ticket);
+              $entityManager->flush();
+              return $this->redirectToRoute('tickets_index');
+            }
+            return $this->render('tickets/new.html.twig',
+            array('ticket' => $ticket,
             'form' => $form->createView(),
-        ]);
+             ));
     }
 
     /**
