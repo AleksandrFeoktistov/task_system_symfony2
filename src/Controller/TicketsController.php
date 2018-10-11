@@ -126,19 +126,13 @@ class TicketsController extends AbstractController
         $tags = $this->getDoctrine()
          ->getRepository(Tags::class)
          ->findBySomeField();
+         $tagsName = array();
          var_dump($tags);
-         //
-         $tagsName = "";
-         $i=0;
-         foreach ($tags as $key) {
-           if ($i!=0) {
-             $e=",";
+           foreach ($tags as $key) {
+             $tagsName[] = $key['name'];
+             // code...
            }
-           else $e=NULL;
-           $tagsName .= $e.$key['name'];
-           $i=$i+1;
-           // code...
-         }
+         $tagsName = implode(",", $tagsName);
          var_dump($tagsName);
           foreach ($user as $row)
          {
