@@ -3,8 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Tags;
+use App\Entity\TicketsTags;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\ORM\Query;
 
 /**
  * @method Tags|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,9 +21,9 @@ class TagsRepository extends ServiceEntityRepository
         parent::__construct($registry, Tags::class);
     }
 
-//    /**
-//     * @return Tags[] Returns an array of Tags objects
-//     */
+    /**
+     * @return Tags[] Returns an array of Tags objects
+     */
     /*
     public function findByExampleField($value)
     {
@@ -36,15 +38,37 @@ class TagsRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?Tags
+
+    public function findBySomeField()
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        // return $this->createQueryBuilder('p')
+        //     ->andWhere('p.exampleField = :val')
+        //     ->setParameter('val', $value)
+        //     ->getQuery()
+        //     ->getOneOrNullResult()
+        // ;
+        // return $this->createQueryBuilder('tags')
+        // ->select('tags.name')
+        // ->getQuery()->getResult(Query::HYDRATE_ARRAY);
+
+
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+        'SELECT l.name, l.id
+         FROM App\Entity\TicketsTags k
+         JOIN App\Entity\Tags l
+         WITH k.tag_id = l.id
+         WHERE k.ticket_id = 2'
+        );
+
+   // returns an array of Product objects
+        return $query->execute();
+
+
+
+
+
     }
-    */
+
 }

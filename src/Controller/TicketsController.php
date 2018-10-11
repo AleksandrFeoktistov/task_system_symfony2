@@ -16,6 +16,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use App\Entity\Comments;
 use App\Entity\Tags;
+use App\Repository\TagsRepository;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -122,7 +123,23 @@ class TicketsController extends AbstractController
          ->getRepository(User::class)
          ->findBySomeField();
           $username = array();
-          $tags="jkjk";
+        $tags = $this->getDoctrine()
+         ->getRepository(Tags::class)
+         ->findBySomeField();
+         var_dump($tags);
+         //
+         $tagsName = "";
+         $i=0;
+         foreach ($tags as $key) {
+           if ($i!=0) {
+             $e=",";
+           }
+           else $e=NULL;
+           $tagsName .= $e.$key['name'];
+           $i=$i+1;
+           // code...
+         }
+         var_dump($tagsName);
           foreach ($user as $row)
          {
            $username[$row['username']] = $row['id'];
@@ -150,7 +167,7 @@ class TicketsController extends AbstractController
             ->add('projectId', HiddenType::class)
             ->add('createrId', HiddenType::class)
             ->add('tags', TextType::class,array(
-               "mapped" => false, 'data' => "$tags"))
+               "mapped" => false, 'data' => "$tagsName"))
             ->add('save', SubmitType::class, array('label' => 'Create ticket'))
             ->getForm();
               $form->handleRequest($request);
