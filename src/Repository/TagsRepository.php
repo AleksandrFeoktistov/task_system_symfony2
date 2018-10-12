@@ -22,6 +22,7 @@ class TagsRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param $ticketId
      * @return Tags[] Returns an array of Tags objects
      */
     /*
@@ -39,28 +40,16 @@ class TagsRepository extends ServiceEntityRepository
     */
 
 
-    public function findBySomeField()
+    public function findBySomeField($ticketId)
     {
-        // return $this->createQueryBuilder('p')
-        //     ->andWhere('p.exampleField = :val')
-        //     ->setParameter('val', $value)
-        //     ->getQuery()
-        //     ->getOneOrNullResult()
-        // ;
-        // return $this->createQueryBuilder('tags')
-        // ->select('tags.name')
-        // ->getQuery()->getResult(Query::HYDRATE_ARRAY);
-
-
         $entityManager = $this->getEntityManager();
-
         $query = $entityManager->createQuery(
-        'SELECT l.name, l.id
+        "SELECT l.name, l.id
          FROM App\Entity\TicketsTags k
          JOIN App\Entity\Tags l
          WITH k.tag_id = l.id
-         WHERE k.ticket_id = 2'
-        );
+         WHERE k.ticket_id = $ticketId"
+       );
 
    // returns an array of Product objects
         return $query->execute();

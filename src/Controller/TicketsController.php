@@ -23,6 +23,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use App\Entity\User;
+use App\Entity\TicketsTags;
 
 /**
  * @Route("/tickets")
@@ -125,14 +126,14 @@ class TicketsController extends AbstractController
           $username = array();
         $tags = $this->getDoctrine()
          ->getRepository(Tags::class)
-         ->findBySomeField();
+         ->findBySomeField($ticket->getId());
          $tagsName = array();
          var_dump($tags);
            foreach ($tags as $key) {
              $tagsName[] = $key['name'];
              // code...
            }
-         $tagsName = implode(",", $tagsName);
+         $tagsNameImpl = implode(",", $tagsName);
          var_dump($tagsName);
           foreach ($user as $row)
          {
@@ -161,27 +162,64 @@ class TicketsController extends AbstractController
             ->add('projectId', HiddenType::class)
             ->add('createrId', HiddenType::class)
             ->add('tags', TextType::class,array(
-               "mapped" => false, 'data' => "$tagsName"))
+               "mapped" => false, 'data' => "$tagsNameImpl"))
             ->add('save', SubmitType::class, array('label' => 'Create ticket'))
             ->getForm();
               $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
               $ticket = $form->getData();
               $tags = $form->get('tags')->getData();
-              $tag = new Tags();
-              $tag ->setName($tags);
-              $em = $this->getDoctrine()->getManager();
-              $em->persist($tag);
-              $em->flush();
-              $entityManager = $this->getDoctrine()->getManager();
-              $entityManager->persist($ticket);
-              $entityManager->flush();
-              return $this->redirectToRoute('tickets_index');
-            }
+              // переводим строку в массив
+              $tags = explode(",", $tags);
+              var_dump($tags);
+              //удалим ненужные связи
+              $tagDel = array_diff($tagsName, $tags);
+              var_dump($tagDel);
+              $UniqTag = array_diff($tags, $tagsName);
+              // проверим, являются ли уникальные теги в тикете уникальными в таблице tegs
+              $UniqTagInTable = array();
+              $repository = $this->getDoctrine()->getRepository(Tags::class);
+
+              foreach($UniqTag as $key){
+                echo $key;
+              $Tegs = $repository->findBy(['name' => $key,]);
+              if (!$Tegs){
+                var_dump($key);
+                $tag = new Tags();
+                $tag ->setName($key);
+                $manager = $this->getDoctrine()->getManager();
+                $manager->persist($tag);
+                $manager->flush();
+                //делаем связи между тегами и тикет тегами
+                $ticketTag = new TicketsTags();
+                $ticketTag ->setTicketId($ticket->getId());
+                    //находим id нужного тега
+                    $repository = $this->getDoctrine()->getRepository(Tags::class);
+                    $tags = $repository->findOneBy(['name' => $key,]);
+                    //
+                $ticketTag ->setTagId($tags->getId());
+                $manager->persist($ticketTag);
+                $manager->flush();
+                }
+                else{
+                  //делаем связи между тегами и тикет тегами
+                  $ticketTag = new TicketsTags();
+                  $ticketTag ->setTicketId($ticket->getId());
+                      //находим id нужного тега
+                      $repository = $this->getDoctrine()->getRepository(Tags::class);
+                      $tags = $repository->findOneBy(['name' => $key,]);
+                      //
+                  $ticketTag ->setTagId($tags->getId());
+                  $manager->persist($ticketTag);
+                  $manager->flush();
+              }
+              }
+              }
             return $this->render('tickets/new.html.twig',
             array('ticket' => $ticket,
             'form' => $form->createView(),
              ));
+
     }
 
     /**
