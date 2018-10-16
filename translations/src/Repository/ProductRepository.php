@@ -35,8 +35,6 @@ class ProductRepository extends ServiceEntityRepository
         ;
     }
     */
-
-    /*
     public function findOneBySomeField($value): ?Product
     {
         return $this->createQueryBuilder('p')
@@ -46,5 +44,4 @@ class ProductRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
-    */
 }

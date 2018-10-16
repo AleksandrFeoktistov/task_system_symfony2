@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Tickets;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
-use App\Entity\User;
 
 /**
  * @method Tickets|null find($id, $lockMode = null, $lockVersion = null)
@@ -20,9 +19,9 @@ class TicketsRepository extends ServiceEntityRepository
         parent::__construct($registry, Tickets::class);
     }
 
-    /**
-     * @return Tickets[] Returns an array of Tickets objects
-     */
+//    /**
+//     * @return Tickets[] Returns an array of Tickets objects
+//     */
     /*
     public function findByExampleField($value)
     {
@@ -36,18 +35,16 @@ class TicketsRepository extends ServiceEntityRepository
         ;
     }
     */
-    public function findOneBytickets($projectId): ?Array
+
+    /*
+    public function findOneBySomeField($value): ?Tickets
     {
-      $entityManager = $this->getEntityManager();
-      $query = $entityManager->createQuery(
-       "SELECT k,l.username,w.username
-       FROM App\Entity\Tickets k
-       JOIN App\Entity\User l
-       WITH l.id = k.assigned_id
-       JOIN App\Entity\User w
-       WITH w.id = k.creater_id
-       WHERE k.project_id = $projectId"
-       );
-       return $query->execute();
-     }
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.exampleField = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+    */
 }

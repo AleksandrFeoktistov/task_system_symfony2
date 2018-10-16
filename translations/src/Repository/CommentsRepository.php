@@ -19,9 +19,9 @@ class CommentsRepository extends ServiceEntityRepository
         parent::__construct($registry, Comments::class);
     }
 
-    /**
-     * @return Comments[] Returns an array of Comments objects
-     */
+//    /**
+//     * @return Comments[] Returns an array of Comments objects
+//     */
     /*
     public function findByExampleField($value)
     {
@@ -35,6 +35,8 @@ class CommentsRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /*
     public function findOneBySomeField($value): ?Comments
     {
         return $this->createQueryBuilder('c')
@@ -44,4 +46,5 @@ class CommentsRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
+    */
 }

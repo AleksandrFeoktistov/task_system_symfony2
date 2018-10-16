@@ -23,66 +23,72 @@ class TagsController extends AbstractController
         return $this->render('tags/index.html.twig', ['tags' => $tagsRepository->findAll()]);
     }
 
-    /**
-     * @Route("/new", name="tags_new", methods="GET|POST")
-     */
-    public function new(Request $request): Response
-    {
-        $tag = new Tags();
-        $form = $this->createForm(TagsType::class, $tag);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($tag);
-            $em->flush();
-            return $this->redirectToRoute('tags_index');
-        }
-        return $this->render('tags/new.html.twig', [
-            'tag' => $tag,
-            'form' => $form->createView(),
-        ]);
-    }
+    // /**
+    //  * @Route("/new", name="tags_new", methods="GET|POST")
+    //  */
+    // public function new(Request $request): Response
+    // {
+    //     $tag = new Tags();
+    //     $form = $this->createForm(TagsType::class, $tag);
+    //     $form->handleRequest($request);
+    //
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $em = $this->getDoctrine()->getManager();
+    //         $em->persist($tag);
+    //         $em->flush();
+    //
+    //         return $this->redirectToRoute('tags_index');
+    //     }
+    //
+    //     return $this->render('tags/new.html.twig', [
+    //         'tag' => $tag,
+    //         'form' => $form->createView(),
+    //     ]);
+    // }
 
     /**
      * @Route("/{id}", name="tags_show", methods="GET")
      */
     public function show(Tags $tag): Response
     {
-        return $this->render('tags/show.html.twig', ['tag' => $tag]);
+      $tag = $tag->getId();
+      $tickets = $this->getDoctrine()
+       ->getRepository(Tags::class)
+       ->findByTags($tag);
+        return $this->render('tags/show.html.twig', ['tickets' => $tickets]);
     }
+
+    // /**
+    //  * @Route("/{id}/edit", name="tags_edit", methods="GET|POST")
+    //  */
+    // public function edit(Request $request, Tags $tag): Response
+    // {
+    //     $form = $this->createForm(TagsType::class, $tag);
+    //     $form->handleRequest($request);
+    //
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $this->getDoctrine()->getManager()->flush();
+    //
+    //         return $this->redirectToRoute('tags_edit', ['id' => $tag->getId()]);
+    //     }
+    //
+    //     return $this->render('tags/edit.html.twig', [
+    //         'tag' => $tag,
+    //         'form' => $form->createView(),
+    //     ]);
+    // }
 
     /**
-     * @Route("/{id}/edit", name="tags_edit", methods="GET|POST")
-     */
-    public function edit(Request $request, Tags $tag): Response
-    {
-        $form = $this->createForm(TagsType::class, $tag);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('tags_edit', ['id' => $tag->getId()]);
-        }
-
-        return $this->render('tags/edit.html.twig', [
-            'tag' => $tag,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}", name="tags_delete", methods="DELETE")
-     */
-    public function delete(Request $request, Tags $tag): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$tag->getId(), $request->request->get('_token'))) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($tag);
-            $em->flush();
-        }
-
-        return $this->redirectToRoute('tags_index');
-    }
+    //  * @Route("/{id}", name="tags_delete", methods="DELETE")
+    //  */
+    // public function delete(Request $request, Tags $tag): Response
+    // {
+    //     if ($this->isCsrfTokenValid('delete'.$tag->getId(), $request->request->get('_token'))) {
+    //         $em = $this->getDoctrine()->getManager();
+    //         $em->remove($tag);
+    //         $em->flush();
+    //     }
+    //
+    //     return $this->redirectToRoute('tags_index');
+    // }
 }

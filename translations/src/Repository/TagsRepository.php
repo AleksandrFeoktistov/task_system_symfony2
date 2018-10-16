@@ -3,10 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\Tags;
+use App\Entity\TicketsTags;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
-use App\Entity\Tickets;
-use App\Entity\TicketsTags;
+use Doctrine\ORM\Query;
 
 /**
  * @method Tags|null find($id, $lockMode = null, $lockVersion = null)
@@ -22,6 +22,7 @@ class TagsRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param $ticketId
      * @return Tags[] Returns an array of Tags objects
      */
     /*
@@ -37,42 +38,26 @@ class TagsRepository extends ServiceEntityRepository
         ;
     }
     */
-     public function findBySomeField($ticketId)
+
+
+    public function findBySomeField($ticketId)
     {
-        // return $this->createQueryBuilder('t')
-        //     ->andWhere('t.exampleField = :val')
-        //     ->setParameter('val', $value)
-        //     ->getQuery()
-        //     ->getOneOrNullResult()
-        // ;
         $entityManager = $this->getEntityManager();
         $query = $entityManager->createQuery(
-         "SELECT l.name, l.id
+        "SELECT l.name, l.id
          FROM App\Entity\TicketsTags k
          JOIN App\Entity\Tags l
          WITH k.tag_id = l.id
          WHERE k.ticket_id = $ticketId"
-         );
-         return $query->execute();
-    }
-    public function findByTags($tag)
-   {
-       // return $this->createQueryBuilder('t')
-       //     ->andWhere('t.exampleField = :val')
-       //     ->setParameter('val', $value)
-       //     ->getQuery()
-       //     ->getOneOrNullResult()
-       // ;
-       $entityManager = $this->getEntityManager();
-       $query = $entityManager->createQuery(
-        "SELECT e
-        FROM App\Entity\Tags k
-        JOIN App\Entity\TicketsTags l
-        WITH l.tag_id = k.id
-        JOIN App\Entity\Tickets e
-        WITH e.id = l.ticket_id
-        WHERE k.id = $tag"
-        );
+       );
+
+   // returns an array of Product objects
         return $query->execute();
-   }
+
+
+
+
+
+    }
+
 }

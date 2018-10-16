@@ -2,6 +2,9 @@
 {% block title %}Project2{% endblock %}
 {% block body %}
     <h1>Project2</h1>
+  <div class="container">
+   <div class="row">
+    <div class="col-sm">
     <table class="table table-striped table-dark">
         <tbody>
         <tr>
@@ -18,6 +21,9 @@
         </tr>
         </tbody>
     </table>
+  </div>
+ </div>
+</div>
 
     <a href="{{ path('project2_index') }}">back to list</a>
     {% if is_granted('ROLE_ADMIN') %}
@@ -26,7 +32,10 @@
     {% if is_granted('ROLE_ADMIN') %}
     {{ include('project2/_delete_form.html.twig') }}
     {% endif %}
-    <td><a href="{{ path('tickets_new', {'id': project2.id}) }}">create new ticket</a><td>
+      <td><a href="{{ path('tickets_new', {'id': project2.id}) }}">create new ticket</a><td>
+        <div class="container">
+  <div class="row">
+    <div class="col-sm">
     <table class="table table-striped table-dark">
        <thead>
          <tr>
@@ -58,5 +67,8 @@
       </tr>
       {% endfor %}
       </tbody>
+    </div>
+</div>
+</div>
 
 {% endblock %}

@@ -8,10 +8,10 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\Query;
 
 /**
- * @method Product|null find($id, $lockMode = null, $lockVersion = null)
- * @method Product|null findOneBy(array $criteria, array $orderBy = null)
- * @method Product[]    findAll()
- * @method Product[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method User|null find($id, $lockMode = null, $lockVersion = null)
+ * @method User|null findOneBy(array $criteria, array $orderBy = null)
+ * @method User[]    findAll()
+ * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class UserRepository extends ServiceEntityRepository
 {
@@ -21,25 +21,24 @@ class UserRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return User[] Returns an array of User objects
+     * @return User[] Returns an array of Comments objects
      */
     /*
     public function findByExampleField($value)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.exampleField = :val')
             ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
+            ->orderBy('c.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
     */
-
-    public function findBySomeField(): ?array
+ public function findBySomeField(): ?array
     {
-        // return $this->createQueryBuilder('p')
+      // return $this->createQueryBuilder('p')
         //     ->andWhere('p.exampleField = :val')
         //     ->setParameter('val', $value)
         //     ->getQuery()
@@ -48,10 +47,5 @@ class UserRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('user')
         ->select('user.id', 'user.username')
         ->getQuery()->getResult(Query::HYDRATE_ARRAY);
-
-
-
-
-
     }
 }

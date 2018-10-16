@@ -9,10 +9,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Tickets;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
  * @Route("/comments")
@@ -26,34 +22,28 @@ class CommentsController extends AbstractController
     {
         return $this->render('comments/index.html.twig', ['comments' => $commentsRepository->findAll()]);
     }
+
     /**
-     * @Route("/new/{id}", name="comments_new", methods="GET|POST")
+     * @Route("/new", name="comments_new", methods="GET|POST")
      */
-    public function new(Request $request, Tickets $ticket): Response
+    public function new(Request $request): Response
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $user = $this->getUser();
         $comment = new Comments();
-        $comment->setUserId($user->getId());
-        $comment->setTicketId($ticket->getId());
-        $form = $this->createFormBuilder($comment)
-            ->add('text', TextType::class)
-            ->add('ticketId', HiddenType::class)
-            ->add('userId', HiddenType::class)
-            ->add('save', SubmitType::class, array('label' => 'Create comment'))
-            ->getForm();
-              $form->handleRequest($request);
-            if ($form->isSubmitted() && $form->isValid()) {
-              $comment = $form->getData();
-              $entityManager = $this->getDoctrine()->getManager();
-              $entityManager->persist($comment);
-              $entityManager->flush();
-              return $this->redirectToRoute('tickets_index');
-            }
-            return $this->render('comments/new.html.twig',
-            array('comment' => $comment,
+        $form = $this->createForm(CommentsType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $manager = $this->getDoctrine()->getManager();
+            $manager->persist($comment);
+            $manager->flush();
+
+            return $this->redirectToRoute('comments_index');
+        }
+
+        return $this->render('comments/new.html.twig', [
+            'comment' => $comment,
             'form' => $form->createView(),
-             ));
+        ]);
     }
 
     /**

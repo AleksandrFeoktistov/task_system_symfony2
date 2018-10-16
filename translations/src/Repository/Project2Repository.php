@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\Product;
+use App\Entity\Project2;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method Product|null find($id, $lockMode = null, $lockVersion = null)
- * @method Product|null findOneBy(array $criteria, array $orderBy = null)
- * @method Product[]    findAll()
- * @method Product[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Project2|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Project2|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Project2[]    findAll()
+ * @method Project2[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProductRepository extends ServiceEntityRepository
+class Project2Repository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Product::class);
+        parent::__construct($registry, Project2::class);
     }
 
 //    /**
-//     * @return Product[] Returns an array of Product objects
+//     * @return Project2[] Returns an array of Project2 objects
 //     */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class ProductRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?Product
+    public function findOneBySomeField($value): ?Project2
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.exampleField = :val')

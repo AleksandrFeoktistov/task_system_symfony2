@@ -52,8 +52,9 @@ class ProjectController extends AbstractController
      */
     public function show(Project2 $project2): Response
     {
-        // $repository = $this->getDoctrine()->getRepository(Tickets::class);
-        // $tickets = $repository->findOneBytickets($project2->getId());
+        $manager = $this->getDoctrine()->getManager();
+        $manager->persist($project2);
+        $manager->flush();
         $repository = $this->getDoctrine()->getRepository(Tickets::class);
         $tickets = $repository->findBy(['project_id' => $project2->getId(),]);
         return $this->render('project2/show.html.twig', ['project2' => $project2, 'tickets' => $tickets ]);
@@ -69,7 +70,7 @@ class ProjectController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
-            return $this->redirectToRoute('project2_edit', array('id' => $project2->getId()));
+            return $this->redirectToRoute('project2_edit', ['id' => $project2->getId()]);
         }
         return $this->render('project2/edit.html.twig', [
             'project2' => $project2,
