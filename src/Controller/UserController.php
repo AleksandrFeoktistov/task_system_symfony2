@@ -61,21 +61,18 @@ class UserController extends AbstractController
      */
     public function edit(Request $request, User $user): Response
     {
+        $this->denyAccessUnlessGranted('edit', $user);
         $form = $this->createForm(User2Type::class, $user);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
-
             return $this->redirectToRoute('user_edit', ['id' => $user->getId()]);
         }
-
         return $this->render('user/edit.html.twig', [
             'user' => $user,
             'form' => $form->createView(),
         ]);
     }
-
     /**
      * @Route("/{id}", name="user_delete", methods="DELETE")
      */
@@ -86,7 +83,6 @@ class UserController extends AbstractController
             $em->remove($user);
             $em->flush();
         }
-
         return $this->redirectToRoute('user_index');
     }
 }

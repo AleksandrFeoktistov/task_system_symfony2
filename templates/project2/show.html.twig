@@ -45,7 +45,6 @@
            <th>Task/Bug</th>
            <th>Status</th>
            <th>assigned_id</th>
-           <th>file</th>
            <th>project_id</th>
            <th>creator_id</th>
          </tr>
@@ -59,7 +58,6 @@
             <td>{{ ticket.type }}</td>
             <td>{{ ticket.status }}</td>
             <td>{{ ticket.assignedid }}</td>
-            <td>{{ ticket.file }}</td>
             <td>{{ ticket.projectId}}</td>
             <td>{{ ticket.createrId}}</td>
             <td><a href="{{ path('tickets_delete', {'id': ticket.id}) }}">delete</a><td>

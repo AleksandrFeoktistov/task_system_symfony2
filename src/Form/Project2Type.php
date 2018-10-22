@@ -14,6 +14,8 @@ class Project2Type extends AbstractType
         $builder
             ->add('name')
             ->add('description')
+            ->add('creater_id')
+            ->add('assigned_id')
         ;
     }
 

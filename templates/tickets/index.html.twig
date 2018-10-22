@@ -4,8 +4,10 @@
 
 {% block body %}
     <h1>Tickets index</h1>
-
-    <table class="table">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm">
+    <table class="table table-striped table-dark">
         <thead>
             <tr>
                 <th>Id</th>
@@ -14,7 +16,6 @@
                 <th>Type</th>
                 <th>Status</th>
                 <th>Assigned_id</th>
-                <th>File</th>
                 <th>Project_id</th>
                 <th>Creater_id</th>
                 <th>actions</th>
@@ -29,7 +30,6 @@
                 <td>{{ ticket.type }}</td>
                 <td>{{ ticket.status }}</td>
                 <td>{{ ticket.assignedId }}</td>
-                <td>{{ ticket.file }}</td>
                 <td>{{ ticket.projectId }}</td>
                 <td>{{ ticket.createrId }}</td>
                 <td>
@@ -37,6 +37,7 @@
                     {% if is_granted('edit', ticket) %}
                     <a href="{{ path('tickets_edit', {'id': ticket.id}) }}">edit</a>
                     {% endif %}
+
                 </td>
             </tr>
         {% else %}
@@ -46,4 +47,7 @@
         {% endfor %}
         </tbody>
     </table>
+  </div>
+</div>
+</div>
 {% endblock %}

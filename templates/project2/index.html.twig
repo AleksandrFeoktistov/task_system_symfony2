@@ -13,7 +13,9 @@
                 <th>Id</th>
                 <th>Name</th>
                 <th>Description</th>
-                <th>actions</th>
+                <th>createrId</th>
+                  <th>assignedId</th>
+                    <th>actions</th>
             </tr>
         </thead>
         <tbody>
@@ -22,9 +24,11 @@
                 <td>{{ project2.id }}</td>
                 <td>{{ project2.name }}</td>
                 <td>{{ project2.description }}</td>
+                <td>{{ project2.createrId }}</td>
+                <td>{{ project2.assignedId }}</td>
                 <td>
                   <a href="{{ path('project2_show', {'id': project2.id}) }}">show</a>
-                  {% if is_granted('ROLE_ADMIN') %}
+                  {% if is_granted('edit', project2) %}
                   <a href="{{ path('project2_edit', {'id': project2.id}) }}">edit</a>
                   {% endif %}
                 </td>

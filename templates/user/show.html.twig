@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tickets{% endblock %}
+
+{% block body %}
+    <h1>User</h1>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm">
+    <table class="table table-striped table-dark">
+        <tbody>
+              <tr>
+                  <td>{{ user.id }}</td>
+                  <td>{{ user.username }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>
+                      <a href="{{ path('user_index')}}">back to list</a>
+                  </td>
+              </tr>
+        </tbody>
+    </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

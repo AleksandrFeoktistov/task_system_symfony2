@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TicketsRepository")
  */
@@ -40,11 +39,6 @@ class Tickets
      * @ORM\Column(type="integer")
      */
     private $assigned_id;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $file;
 
     /**
      * @ORM\Column(type="integer")
@@ -121,18 +115,6 @@ class Tickets
         return $this;
     }
 
-    public function getFile(): ?string
-    {
-        return $this->file;
-    }
-
-    public function setFile(?string $file): self
-    {
-        $this->file = $file;
-
-        return $this;
-    }
-
     public function getProjectId(): ?int
     {
         return $this->project_id;
@@ -156,4 +138,23 @@ class Tickets
 
         return $this;
     }
+    /**
+    * @ORM\Column(type="string")
+    *
+    *
+    *
+    */
+   private $brochure;
+
+   public function getBrochure()
+   {
+       return $this->brochure;
+   }
+
+   public function setBrochure($brochure)
+   {
+       $this->brochure = $brochure;
+
+       return $this;
+   }
 }

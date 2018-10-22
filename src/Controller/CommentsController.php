@@ -37,23 +37,22 @@ class CommentsController extends AbstractController
         $comment->setUserId($user->getId());
         $comment->setTicketId($ticket->getId());
         $form = $this->createFormBuilder($comment)
-            ->add('text', TextType::class)
-            ->add('ticketId', HiddenType::class)
-            ->add('userId', HiddenType::class)
-            ->add('save', SubmitType::class, array('label' => 'Create comment'))
-            ->getForm();
-              $form->handleRequest($request);
+                ->add('text', TextType::class)
+                ->add('ticketId', HiddenType::class)
+                ->add('userId', HiddenType::class)
+                ->add('save', SubmitType::class, array('label' => 'Create comment'))
+                ->getForm();
+        $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
-              $comment = $form->getData();
-              $entityManager = $this->getDoctrine()->getManager();
-              $entityManager->persist($comment);
-              $entityManager->flush();
-              return $this->redirectToRoute('tickets_index');
+                    $comment = $form->getData();
+                    $entityManager = $this->getDoctrine()->getManager();
+                    $entityManager->persist($comment);
+                    $entityManager->flush();
+                    return $this->redirectToRoute('tickets_show', array('id' => $ticket->getId()));
             }
-            return $this->render('comments/new.html.twig',
-            array('comment' => $comment,
-            'form' => $form->createView(),
-             ));
+        return $this->render('comments/new.html.twig',array('comment' => $comment,
+        'form' => $form->createView(),
+        ));
     }
 
     /**
@@ -70,19 +69,31 @@ class CommentsController extends AbstractController
     public function edit(Request $request, Comments $comment): Response
     {
         $this->denyAccessUnlessGranted('editcomments', $comment);
-        $form = $this->createForm(CommentsType::class, $comment);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('comments_edit', ['id' => $comment->getId()]);
-        }
-
-        return $this->render('comments/edit.html.twig', [
-            'comment' => $comment,
-            'form' => $form->createView(),
-        ]);
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
+        //передаем creater_id
+        //$comments->setuserId($user->getId());
+        // передаем projectId
+        //$comments ->setticketId($comment->get());
+        //
+        $form = $this->createFormBuilder($comment)
+                  ->add('text', TextType::class)
+                 ->add('ticketId', HiddenType::class)
+                 ->add('userId', HiddenType::class)
+                 ->add('save', SubmitType::class, array('label' => 'Create project'))
+                 ->getForm();
+                    $form->handleRequest($request);
+              if ($form->isSubmitted() && $form->isValid()) {
+                   $comments = $form->getData();
+                   $entityManager = $this->getDoctrine()->getManager();
+                   $entityManager->persist($comments);
+                   $entityManager->flush();
+              return $this->redirectToRoute('tickets_show',array('id'=>$comment->getticketId()));
+              }
+              return $this->render('comments/edit.html.twig',
+              array('comments' => $comment,
+              'form' => $form->createView(),
+               ));
     }
 
     /**
@@ -90,6 +101,7 @@ class CommentsController extends AbstractController
      */
     public function delete(Request $request, Comments $comment): Response
     {
+        $this->denyAccessUnlessGranted('editcomments', $comment);
         if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->request->get('_token'))) {
             $manager = $this->getDoctrine()->getManager();
             $manager->remove($comment);
